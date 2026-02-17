@@ -35,24 +35,33 @@ jobs:
           fi
 
           MERGE_REF="${SHA_SHORT:0:12}"
+          export MERGE_REF
           RESPONSE_FILE="$(mktemp)"
+          PAYLOAD_FILE="$(mktemp)"
+
+          python - <<'PY' "${PAYLOAD_FILE}"
+import json
+import os
+import sys
+from pathlib import Path
+
+payload = {
+    "base_ref": os.environ["BASE_REF"],
+    "head_ref": os.environ["HEAD_REF"],
+    "merge_ref": os.environ["MERGE_REF"],
+    "metadata": {
+        "repository": os.environ["REPO"],
+        "github_run_id": os.environ["RUN_ID"],
+        "trigger": "github_actions_push_main",
+    },
+}
+Path(sys.argv[1]).write_text(json.dumps(payload), encoding="utf-8")
+PY
 
           curl -sS -X POST "${DCF_API_URL}/ci/merge" \
             -H "Content-Type: application/json" \
             -H "X-DCF-Token: ${DCF_CI_TOKEN}" \
-            -d "$(cat <<JSON
-          {
-            "base_ref": "${BASE_REF}",
-            "head_ref": "${HEAD_REF}",
-            "merge_ref": "${MERGE_REF}",
-            "metadata": {
-              "repository": "${REPO}",
-              "github_run_id": "${RUN_ID}",
-              "trigger": "github_actions_push_main"
-            }
-          }
-JSON
-          )" > "${RESPONSE_FILE}"
+            -d "@${PAYLOAD_FILE}" > "${RESPONSE_FILE}"
 
           python - <<'PY' "${RESPONSE_FILE}" "${DCF_API_URL}"
 import json
