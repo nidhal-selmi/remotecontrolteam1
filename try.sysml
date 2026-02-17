@@ -5,5 +5,8 @@ package remotecontrol{
         requirement Cost {
             doc /*Production cost should be less than 100*/;
         }
+        requirement functionality{
+            doc /* The remote control shall manage multiple devices and include a feature to locate it easily.*/
+        }
     }
 }
