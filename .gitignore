@@ -1,0 +1,12 @@
+decisions/
+hierarchies/
+mappings/
+adrs/
+traceability/
+runs/
+.dcf-state/
+
+# Generic
+__pycache__/
+*.py[cod]
+.DS_Store
