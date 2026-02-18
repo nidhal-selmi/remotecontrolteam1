@@ -5,6 +5,7 @@ adrs/
 traceability/
 runs/
 .dcf-state/
+.dcf/workspace.json
 
 # Generic
 __pycache__/
