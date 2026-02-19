@@ -14,5 +14,6 @@ package remotecontrol{
         requirement batteryuse {
             doc /* The remote control should have a battery. */
         }
+        attribute size = "small";
     }
 }
